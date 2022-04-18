@@ -18,6 +18,9 @@
 - 证明
 - 注
 
+## 参考项目
+
+- 主要设置源于 zepinglee 的 [`exam-zh`](https://github.com/zepinglee/exam-zh) 项目，特此表示感谢！
 ## 参与贡献
 
 ### 仓库地址

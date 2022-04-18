@@ -1,0 +1,254 @@
+%
+% Copyright (c) 2022 Kangwei Xia
+% Released under the LaTeX Project Public License v1.3c License.
+% Repository: https://gitee.com/xkwxdyy/tingtao-math
+% Repository: https://github.com/xkwxdyy/tingtao-math
+%
+
+\NeedsTeXFormat{LaTeX2e}
+
+\RequirePackage{expl3}
+\RequirePackage{xparse}
+
+\ProvidesExplPackage {tingtao-math-question} {2022-02-04} {v0.1.0}
+    {tingtao-math question module}
+
+
+\RequirePackage{xeCJKfntef}
+\RequirePackage{color}
+
+\xeCJKsetup {
+  underline = {
+    skip  = false ,
+    depth = 0.3em ,
+  },
+}
+
+
+\int_new:N \g__tingtao_question_index_int
+\tl_new:N \l_tingtao_question_answer_tl
+
+% 答案颜色
+\tl_new:N \l__tingtao_question_answer_color_tl
+% 题目分数
+\int_new:N \l__tingtao_question_points_int
+% 是否显示题目分数
+\bool_new:N \l__tingtao_question_show_points_bool
+\bool_new:N \l__tingtao_question_show_points_auto_bool
+% 题目分数是否单独成段
+\bool_new:N \l__tingtao_question_points_separate_par_bool
+% 是否显示括号
+\bool_new:N \l__tingtao_question_show_paren_bool
+% 是否显示答案
+\bool_new:N \l__tingtao_question_show_answer_bool
+% 上下的间距
+\skip_new:N \l__tingtao_question_top_sep_skip
+\skip_new:N \l__tingtao_question_bottom_sep_skip
+
+\keys_define:nn { tingtao-math }
+  { question .meta:nn = { tingtao-math / question } {#1} }
+
+
+\keys_define:nn { tingtao-math / question }
+  {
+    answer-color        .tl_set:N = \l__tingtao_question_answer_color_tl ,
+    index               .int_gset:N = \g__tingtao_question_index_int ,
+    points              .int_set:N = \l__tingtao_question_points_int ,
+    show-points         .choice: ,
+    show-points / auto  .code:n =
+      { \bool_set_true:N \l__tingtao_question_show_points_auto_bool } ,
+    show-points / true  .code:n =
+      {
+        \bool_set_true:N  \l__tingtao_question_show_points_bool
+        \bool_set_false:N \l__tingtao_question_show_points_auto_bool
+      } ,
+    show-points / false .code:n =
+      {
+        \bool_set_false:N \l__tingtao_question_show_points_bool
+        \bool_set_false:N \l__tingtao_question_show_points_auto_bool
+      } ,
+    points-separate-par .bool_set:N = \l__tingtao_question_points_separate_par_bool ,
+    show-paren          .bool_set:N = \l__tingtao_question_show_paren_bool ,
+    show-answer         .bool_set:N = \l__tingtao_question_show_answer_bool ,
+    top-sep             .skip_set:N = \l__tingtao_question_top_sep_skip ,
+    bottom-sep          .skip_set:N = \l__tingtao_question_bottom_sep_skip ,
+  }
+
+\keys_set:nn { tingtao-math / question }
+  {
+    answer-color        = black ,
+    points              = 0 ,
+    show-points         = auto ,
+    points-separate-par = false ,
+    show-paren          = false ,
+    show-answer         = false ,
+    top-sep             = .5em plus .5em minus .2em ,
+    bottom-sep          = .5em plus .5em minus .2em ,
+  }
+
+
+
+% 是否按照解答题的格式排版
+\bool_new:N \l__tingtao_question_problem_style_bool
+
+
+% 选择题和填空题
+\NewDocumentEnvironment { question } { O { } +b }
+  {
+    \bool_set_false:N \l__tingtao_question_problem_style_bool
+    \__tingtao_question_begin:nn {#1}{#2}
+  }
+  { \__tingtao_question_end:nn {#1}{#2} }
+
+% 解答题
+\NewDocumentEnvironment { problem } { O { } +b }
+  {
+    \bool_set_true:N \l__tingtao_question_problem_style_bool
+    \__tingtao_question_begin:nn {#1}{#2}
+  }
+  { \__tingtao_question_end:nn {#1}{#2} }
+
+
+\cs_new:Npn \__tingtao_question_begin:nn #1#2
+  {
+    \par
+    \int_gincr:N \g__tingtao_question_index_int
+    \tl_clear:N \l_tingtao_question_answer_tl
+    \bool_if:NTF \l__tingtao_question_problem_style_bool
+      { \keys_set:nn { tingtao-math / question } { points-separate-par = true  } }
+      { \keys_set:nn { tingtao-math / question } { points-separate-par = false } }
+    \keys_set:nn { tingtao-math / question } { #1 }
+    \addvspace { \l__tingtao_question_top_sep_skip }
+    % 严格禁止孤行和寡行
+    \int_set:Nn \clubpenalty { 10000 }
+    \int_set:Nn \widowpenalty { 10000 }
+    % 尽量避免在题目中间换行
+    \int_set:Nn \interlinepenalty { 301 }
+    \int_incr:N \@enumdepth
+    \bool_if:NT \l__tingtao_question_show_points_auto_bool
+      {
+        \bool_if:NTF \l__tingtao_question_problem_style_bool
+          { \bool_set_true:N  \l__tingtao_question_show_points_bool }
+          { \bool_set_false:N \l__tingtao_question_show_points_bool }
+      }
+    \list { \int_use:N \g__tingtao_question_index_int . }
+      {
+        \dim_set:Nn \topsep    { 0pt }
+        \dim_set:Nn \partopsep { 0pt }
+        \dim_set:Nn \itemsep   { 0pt }
+        \dim_set:Nn \parsep    { 0pt }
+        \bool_if:NTF \l__tingtao_question_problem_style_bool
+          {
+            \dim_set:Nn \leftmargin { 0pt }
+            \dim_set:Nn \itemindent { 2em }
+          }
+          {
+            \dim_set:Nn \leftmargin { 2em }
+            \dim_set:Nn \itemindent { 0pt }
+          }
+        \dim_set:Nn \labelsep   { .7em  }
+        \dim_set:Nn \labelwidth { 1.3em }
+        \dim_set_eq:NN \listparindent \itemindent
+      }
+    \item \relax
+    % 输出题目分数
+    \bool_if:NT \l__tingtao_question_show_points_bool
+      {
+        \int_compare:nNnT { \l__tingtao_question_points_int } > { 0 }
+          { （ \int_use:N \l__tingtao_question_points_int ~ 分） }
+        \bool_if:NT \l__tingtao_question_points_separate_par_bool
+          { \par \nopagebreak }
+      }
+  }
+
+
+\cs_new:Npn \__tingtao_question_end:nn #1#2
+  {
+    #2
+    \endlist
+    \addvspace { \l__tingtao_question_bottom_sep_skip }
+  }
+
+
+% 选择题括号
+\NewDocumentCommand \paren { O { } }
+  {
+    \bool_if:NT \l__tingtao_question_show_answer_bool
+      { \bool_set_true:N \l__tingtao_question_show_paren_bool }
+    \bool_if:NT \l__tingtao_question_show_paren_bool
+      {
+        % 使括号单独成行时居于右侧
+        \nobreak \hfill \allowbreak
+        \null \nobreak \hfill \nobreak
+        \hbox:n
+          {
+            （
+            \hbox_to_wd:nn { 3em }
+              {
+                \bool_if:NT \l__tingtao_question_show_answer_bool
+                  { \hfill \__tingtao_question_print_answer:n {#1} \hfill }
+              }
+            ） \kern -.4em
+          }
+      }
+  }
+
+\cs_new:Npn \__tingtao_question_print_answer:n #1
+  {
+    % \tl_set:Nn \l_tingtao_question_answer_tl {#1}
+    \group_begin:
+      \tl_if_eq:NnF \l__tingtao_question_answer_color_tl { black }
+        { \exp_args:NV \color \l__tingtao_question_answer_color_tl }
+      #1
+    \group_end:
+  }
+
+
+\dim_new:N \l__tingtao_question_answer_depth_dim
+
+% 填空命令
+\NewDocumentCommand \fillin { s O { } }
+  {
+    % \tl_set:Nn \l_tingtao_question_answer_tl {#1}
+    \bool_lazy_and:nnTF
+      { \bool_if_p:N \l__tingtao_question_show_answer_bool }
+      { \bool_not_p:n { \tl_if_empty_p:n {#2} } }
+      {
+        \IfBooleanTF {#1}
+          { \__tingtao_question_fillin_adjust_depth:n {#2} }
+          { \__tingtao_question_fillin_allow_break:n {#2} }
+      }
+      { \CJKunderline { \hspace* { 3em plus 1em minus 1em } } }
+    \space \ignorespaces
+  }
+
+\cs_new:Npn \__tingtao_question_fillin_adjust_depth:n #1
+  % 自动调整内容的深度防止与下划线重叠（https://gitee.com/zepinglee/tingtao-math/issues/I4TJTN）
+  {
+    \hbox_set:Nn \l_tmpa_box { \__tingtao_question_print_answer:n {#1} }
+    \dim_set:Nn \l__tingtao_question_answer_depth_dim
+      { \box_dp:N \l_tmpa_box }
+    \CJKunderline
+      {
+        \hspace* { 1em plus .5em minus .5em }
+        \dim_compare:nNnTF { \l__tingtao_question_answer_depth_dim } > { 0.2em }
+          {
+            \dim_sub:Nn \l__tingtao_question_answer_depth_dim { 0.2em }
+            \raisebox { \l__tingtao_question_answer_depth_dim }
+              { \box_use_drop:N \l_tmpa_box }
+          }
+          { \box_use_drop:N \l_tmpa_box }
+        \hspace* { 1em plus .5em minus .5em }
+      }
+  }
+
+\cs_new:Npn \__tingtao_question_fillin_allow_break:n #1
+  {
+    \CJKunderline
+      [ textformat = \color { \l__tingtao_question_answer_color_tl } ]
+      {
+        \hspace* { 1em plus .5em minus .5em }
+          #1
+        \hspace* { 1em plus .5em minus .5em }
+      }
+  }
