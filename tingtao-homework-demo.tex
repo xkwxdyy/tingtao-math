@@ -1,0 +1,64 @@
+\documentclass{tingtao-homework}
+
+\tingtaosetup{
+  exercise = {
+    answer-color = black,  % \paren 的答案颜色
+    show-paren   = true,   % 显示 \paren 的括号
+    show-answer  = true,   % 显示 \paren 答案
+    top-sep      = .5em plus .5em minus .2em ,
+    bottom-sep   = .5em plus .5em minus .2em ,
+    show-date    = true,   % 是否显示日期（统一控制）
+  },
+  % 选择题 choices 环境的相关参数控制，一般不需要改动
+  choices = {
+    column-sep  = 1em,    % 选项列之间的最小间隔
+    label-pos   = auto,   % 标签的位置
+    label-sep   = 0.5em,  % 标签与选项之间的距离
+    max-columns = 4,      % 最大列数
+  },
+}
+
+\title{《点集拓扑》HW1 拓扑空间}
+\author{华中师大数统学院 邓勤涛}
+\date{\today}
+
+
+
+% 自行调用宏包
+
+% 参考文献
+% \usepackage[
+%   backend = biber,        % 需要使用 biber 编译链或者 latexmk 编译参考文献
+%   style   = gb7714-2015   % 格式为国标
+% ]{biblatex}
+
+
+
+% 自行定义命令环境等
+
+
+
+\begin{document}
+
+% 标题
+\maketitle
+
+
+\begin{exercise}
+  设 $(X, \mathscr{T})$ 为拓扑空间, 其中
+  \[\mathscr{T}=\left\{X, \emptyset, A,B\right\},\]
+  这里 $A,B$ 为 $X$ 的不同非空真子集.  请问: $A$ 与 $B$ 由什么关系?
+\end{exercise}
+
+\begin{exercise}
+  设
+  \[
+    \mathscr{T}=\{E_n=\{n, n+1, n+2, \cdots\}: n\in \mathbf{N}_+\}\bigcup\{\emptyset\}
+  \]
+  \begin{enumerate}
+    \item 请证明$\mathscr{T}$是$\mathbf{N}_+$上的拓扑.
+    \item 请写出$(\mathbf{N}_+,\mathscr{T})$中的所有闭集.
+  \end{enumerate}
+\end{exercise}
+
+\end{document}

@@ -1,0 +1,174 @@
+\documentclass{tingtao-beamer}
+
+
+% 个人信息
+\title[实变函数]{第6讲 \quad Lebesgue可测函数}
+\author{邓勤涛}
+\institute[华中师大]{%
+  {\color{red}\url{TingtaoMath@yeah.net}}\\[4mm]
+  {\color{purple}\large \kaishu 欢迎访问微师-听涛数学}\\[2mm]
+  % {\color{red}\url{https://m.weishi100.com/mweb/classroom/?id=16592}}
+  \includegraphics[height=2cm]{weishi-qrcode.jpg}
+}
+\date{}
+\logo{\includegraphics[height=1cm]{tingtao-logo.png}}
+
+
+% 控制是否在每个 section 和 subsection 前出现一次目录
+\TocBeforeSection
+\TocBeforeSubsection
+
+
+\begin{document}
+
+
+% 封面页
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% 目录
+\begin{frame}{目录}
+  \tableofcontents
+\end{frame}
+
+
+\begin{frame}{关于每帧的标题}
+  标题可以不需要 frametitle，直接用 \{\} 写即可，具体参看源代码
+\end{frame}
+
+
+\section{已经定义好的命令环境}
+
+
+\begin{frame}{有一些已经定义好的定理类环境}
+  beamer 中有一些预定义好的定理类环境，比如定义定理等
+  \begin{definition}[测度]
+    这是定义
+  \end{definition}
+  \begin{theorem}[Riesz 表示定理]
+    这是定理
+  \end{theorem}
+  \begin{example}[子环没有单位元]
+    这是例子
+  \end{example}
+\end{frame}
+
+\begin{frame}{有一些已经定义好的定理类环境}
+  \begin{proof}
+    这是证明
+  \end{proof}
+
+  \begin{proof}[证明 $A_n(n\geq 5)$是单群]
+    这是证明
+  \end{proof}
+  
+  \begin{fact}
+    事实
+  \end{fact}
+
+  \begin{corollary}[西罗第一定理的推论]
+    推论
+  \end{corollary}
+\end{frame}
+
+\begin{frame}{自定义定理类环境}
+  通过 \textbackslash newtheorem 来定义，具体参看源代码
+  \newtheorem{remark}{注}
+  \newtheorem{property}{性质}
+  \begin{remark}[关于单群的定义]
+    单群定义中有“不等于 $\{e\}$”
+  \end{remark}
+  \begin{property}[可积性]
+    测试
+  \end{property}
+\end{frame}
+
+\begin{frame}{列表环境}
+  已经进行了相应的完善，带序号的使用 enumerate 环境，不带序号的用 itemize 环境即可。
+  \begin{enumerate}
+    \item 第一条
+      \begin{itemize}
+        \item 第一个
+        \item 第二个
+      \end{itemize}
+    \item 第二条
+    \item 第三条
+      \begin{enumerate}
+        \item 第一条
+        \item 第二条
+      \end{enumerate}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{“强调”命令和环境}
+  重定义了 \textbackslash emph 命令，定义了 emphasize 环境。前者用于内容少的部分的强调，后者用于多内容以及行间公式的强调。两者默认效果均为标红，不加粗。颜色通过可选参数的 color 键值控制，需要加粗只需要在可选参数中输入 bf, textbf, bfseries 中任意一个即可（具体参看源代码）。下面给例子：
+
+  测试 \emph{测试} \emph[color=blue]{测试}
+
+  测试 \emph[bf]{测试} \emph[color=blue,textbf]{测试}
+\end{frame}
+
+
+% 内容
+\section{示例}
+
+\subsection{阶梯函数与简单函数}
+
+\begin{frame}{示性函数(Characteristic Function)}
+\begin{definition}[示性函数(Characteristic Function)]
+  设 $E\subset \mathbb{R}^d$,
+    \begin{emphasize}
+      \[
+        \chi_{E}(x)=
+          \begin{cases}
+          1,& x\in E,\\
+          0,& x\notin E,
+          \end{cases}
+      \]
+    \end{emphasize}
+  称为 $E$ 上的\emph[bf]{示性函数}.
+\end{definition}
+\end{frame}
+
+
+\begin{frame}{阶梯函数(Step Function)}
+\begin{definition}[阶梯函数(Step Function)]
+  \emph[textbf]{有限和}
+  \begin{emphasize}
+    \[f=\sum_{k=1}^Na_k\chi_{R_k}\]
+  \end{emphasize}
+称为\emph{阶梯函数}, 其中$a_k$为\emph{常数}, $R_k$为\emph{长方形}.
+\end{definition}
+\end{frame}
+
+
+\begin{frame}{可测函数的性质}
+\begin{block}{性质1}
+设 $E\subset\mathbb{R}^d$ 为可测集, 则下列三条等价:
+\begin{enumerate}
+  \item $f: E\to\mathbb{R}$可测
+  \item 对$\mathbb{R}$中 \emph{任何开集} $\mathcal{O}$, $f^{-1}(\mathcal{O})$可测
+  \item 对$\mathbb{R}$中 \emph{任何闭集} $F$, $f^{-1}(F)$可测
+\end{enumerate}
+\end{block}
+\end{frame}
+
+
+
+\section{参考文献}
+
+\begin{frame}{参考文献}
+\begin{thebibliography}{GNN}
+  \bibitem{} 北京大学数学系前代数小组编, 王萼芳、石生明\ 修订, \emph{高等代数(第5版)}, 高等教育出版社, 2019.
+  %\bibitem{} Walter Rudin, \emph{Principle of Mathematical Analysis}(3rd edition), 机械工业出版社.
+  \bibitem{} 樊启斌,  \emph{高等代数典型问题与方法(第1版)},  高等教育出版社, 2021.
+  %\bibitem{} W.J. Kaczor and M.T. Nowak, \emph{Problems in Mathematical Analysis I}, Student Mathematical Library Volume 4, 2000.
+  %\bibitem{} 徐利治等,  \emph{大学数学解题法诠释},  安徽教育出版社, 1998.
+  \bibitem{} 钱吉林, \emph{高等代数题解精粹},  中央民族大学出版社, 2002.
+  %\bibitem{} 菲尔金哥尔茨, \emph{微积分学教程}(第二卷，第8版), 高等教育出版社, 2006 年第2版.
+  %\bibitem{}  \emph{华东师大数学分析第五版上册},高等教育出版社, 2019.
+\end{thebibliography}
+\end{frame}
+
+\end{document}

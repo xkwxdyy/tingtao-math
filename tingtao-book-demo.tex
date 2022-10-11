@@ -1,0 +1,63 @@
+\documentclass{tingtao-book}
+
+\tingtaosetup{
+  exercise = {
+    answer-color = black,  % \paren 的答案颜色
+    show-paren   = true,   % 显示 \paren 的括号
+    show-answer  = true,   % 显示 \paren 答案
+    top-sep      = .5em plus .5em minus .2em ,
+    bottom-sep   = .5em plus .5em minus .2em ,
+    show-date    = true,   % 是否显示日期（统一控制）
+  },
+  % 选择题 choices 环境的相关参数控制，一般不需要改动
+  choices = {
+    column-sep  = 1em,    % 选项列之间的最小间隔
+    label-pos   = auto,   % 标签的位置
+    label-sep   = 0.5em,  % 标签与选项之间的距离
+    max-columns = 4,      % 最大列数
+  },
+}
+
+\title{听涛——数学分析}
+\author{邓勤涛}
+\date{\today}
+
+
+
+% 自行调用宏包
+
+% 参考文献
+\usepackage[
+  backend = biber,        % 需要使用 biber 编译链或者 latexmk 编译参考文献
+  style   = gb7714-2015   % 格式为国标
+]{biblatex}
+
+
+
+% 自行定义命令环境等
+
+
+
+\begin{document}
+
+% 封面
+\maketitle
+
+% 前言、目录等部分
+\frontmatter
+% 目录
+\tableofcontents
+
+
+% 正文部分
+\mainmatter
+% 通过 \include{} 方式插入子文件
+% \include{./body/chapter1.tex}
+\include{./body/chapter2.tex}
+
+
+% 后文部分，如参考文献、附录等
+\backmatter
+
+
+\end{document}
